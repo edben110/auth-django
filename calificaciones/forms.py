@@ -3,7 +3,10 @@ from .models import Calificacion
 
 
 class CalificacionForm(forms.ModelForm):
+    """Formulario para crear y editar calificaciones desde los templates."""
+
     class Meta:
+        """Configura campos editables y widgets con clases Bootstrap."""
         model = Calificacion
         fields = ['nombre_estudiante', 'identificacion', 'asignatura', 'nota1', 'nota2', 'nota3']
         widgets = {

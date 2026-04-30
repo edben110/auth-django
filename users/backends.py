@@ -12,6 +12,12 @@ class EmailBackend(ModelBackend):
     """
 
     def authenticate(self, request, username=None, password=None, **kwargs):
+        """
+        Busca al usuario por email y, si no existe, por username.
+
+        Django llama este metodo desde authenticate(). Si las credenciales
+        son validas y el usuario esta activo, se retorna el objeto User.
+        """
         try:
             # Intentar buscar por email primero
             user = User.objects.get(email=username)
@@ -27,6 +33,7 @@ class EmailBackend(ModelBackend):
         return None
 
     def get_user(self, user_id):
+        """Recupera el usuario autenticado a partir del id guardado en sesion."""
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:

@@ -4,7 +4,12 @@ from .models import User
 
 
 class UserRegisterForm(UserCreationForm):
-    """Formulario para registrar nuevos usuarios."""
+    """
+    Formulario de registro basado en UserCreationForm.
+
+    Agrega el correo como campo obligatorio y aplica clases Bootstrap para
+    mantener el estilo visual definido en los templates.
+    """
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'}),
@@ -20,6 +25,7 @@ class UserRegisterForm(UserCreationForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """Personaliza los widgets de password que vienen de UserCreationForm."""
         super().__init__(*args, **kwargs)
         self.fields['password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Contraseña'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Confirmar contraseña'})
