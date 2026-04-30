@@ -27,8 +27,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-*7&j!9d+&pk=h_e!$2s0x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() in ('1', 'true', 'yes')
 
+def _split_env_list(value):
+    return [item.strip() for item in value.split(',') if item.strip()]
+
+
 # Hosts allowed to serve the app. Set via environment variable (comma separated).
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = _split_env_list(os.environ.get('ALLOWED_HOSTS', '')) or ['127.0.0.1', 'localhost', '.onrender.com']
+
+CSRF_TRUSTED_ORIGINS = _split_env_list(os.environ.get('CSRF_TRUSTED_ORIGINS', ''))
 
 
 # Application definition
@@ -129,7 +135,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Use WhiteNoise to serve static files in production
