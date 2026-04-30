@@ -129,6 +129,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Modelo de usuario personalizado
 AUTH_USER_MODEL = 'users.User'
 
+# Authentication Backends
+# Primero intenta con el backend personalizado (email),
+# luego con el backend por defecto de Django (username)
+AUTHENTICATION_BACKENDS = [
+    'users.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Redirecciones de autenticación
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
