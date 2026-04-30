@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,14 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-*7&j!9d+&pk=h_e!$2s0x5v91uus&5=j)(mtuxm*hzwl@-v+n0')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False').lower() in ('1', 'true', 'yes')
+# En local DEBUG=True por defecto. En Render se configura DEBUG=False como variable de entorno.
+DEBUG = os.environ.get('DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
 def _split_env_list(value):
     return [item.strip() for item in value.split(',') if item.strip()]
 
-
-# Hosts allowed to serve the app. Set via environment variable (comma separated).
 ALLOWED_HOSTS = _split_env_list(os.environ.get('ALLOWED_HOSTS', '')) or ['127.0.0.1', 'localhost', '.onrender.com']
 
 CSRF_TRUSTED_ORIGINS = _split_env_list(os.environ.get('CSRF_TRUSTED_ORIGINS', ''))
@@ -53,7 +50,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,6 +57,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# WhiteNoise: solo se activa si está instalado (producción/Render)
+try:
+    import whitenoise  # noqa: F401
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+except ImportError:
+    pass
 
 
 ROOT_URLCONF = 'config.urls'
@@ -85,12 +88,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# En producción (Render) se usa DATABASE_URL con Postgres.
+# En local se usa SQLite por defecto.
 
-# Database: use DATABASE_URL if provided (Postgres on Render), otherwise fallback to sqlite.
 if os.environ.get('DATABASE_URL'):
+    import dj_database_url
     DATABASES = {
-        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'), conn_max_age=600)
+        'default': dj_database_url.parse(os.environ['DATABASE_URL'], conn_max_age=600)
     }
 else:
     DATABASES = {
@@ -119,13 +123,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Password hashing: prefer Argon2, fallback to Django defaults
+# Password hashing: usa Argon2 si está instalado, sino PBKDF2 (default de Django)
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.Argon2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
+try:
+    import argon2  # noqa: F401
+    PASSWORD_HASHERS.insert(0, 'django.contrib.auth.hashers.Argon2PasswordHasher')
+except ImportError:
+    pass
+try:
+    import bcrypt  # noqa: F401
+    PASSWORD_HASHERS.append('django.contrib.auth.hashers.BCryptSHA256PasswordHasher')
+except ImportError:
+    pass
 
 
 # Internationalization
@@ -146,8 +158,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Use WhiteNoise to serve static files in production
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WhiteNoise storage: solo si está instalado
+try:
+    import whitenoise  # noqa: F401
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+except ImportError:
+    pass
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -183,5 +199,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'gmailcorreoprueba@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'wsog aotu nyfl spef')
