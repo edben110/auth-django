@@ -3,20 +3,95 @@
 {% block title %}Editar Calificación{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Editar Calificación de {{ calificacion.nombre_estudiante }}</h2>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="page-header">
+            <h2><i class="bi bi-pencil-square me-2"></i>Editar Calificación</h2>
+        </div>
 
-<form method="post">
-    {% csrf_token %}
-    {% for field in form %}
-    <div class="mb-3">
-        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-        {{ field }}
-        {% if field.errors %}
-        <div class="text-danger">{{ field.errors }}</div>
-        {% endif %}
+        <div class="alert alert-light d-flex align-items-center mb-4">
+            <i class="bi bi-info-circle me-2" style="color: #9575cd;"></i>
+            Editando registro de <strong class="ms-1" style="color: #37304a;">{{ calificacion.nombre_estudiante }}</strong>
+            <span class="ms-2" style="color: #736b8a;">— {{ calificacion.asignatura }}</span>
+        </div>
+
+        <div class="card" style="overflow: hidden;">
+            <div style="height: 5px; background: linear-gradient(90deg, #ffa726, #ffcc80, #42a5f5);"></div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="{{ form.nombre_estudiante.id_for_label }}" class="form-label">
+                                <i class="bi bi-person me-1" style="color: #9575cd;"></i>{{ form.nombre_estudiante.label }}
+                            </label>
+                            {{ form.nombre_estudiante }}
+                            {% if form.nombre_estudiante.errors %}
+                            <div class="text-danger small mt-1">{{ form.nombre_estudiante.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.identificacion.id_for_label }}" class="form-label">
+                                <i class="bi bi-card-text me-1" style="color: #9575cd;"></i>{{ form.identificacion.label }}
+                            </label>
+                            {{ form.identificacion }}
+                            {% if form.identificacion.errors %}
+                            <div class="text-danger small mt-1">{{ form.identificacion.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.asignatura.id_for_label }}" class="form-label">
+                            <i class="bi bi-book me-1" style="color: #9575cd;"></i>{{ form.asignatura.label }}
+                        </label>
+                        {{ form.asignatura }}
+                        {% if form.asignatura.errors %}
+                        <div class="text-danger small mt-1">{{ form.asignatura.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <hr class="my-4">
+                    <h6 class="mb-3" style="color: #736b8a; font-weight: 600;">
+                        <i class="bi bi-123 me-1" style="color: #9575cd;"></i>Calificaciones
+                    </h6>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.nota1.id_for_label }}" class="form-label">{{ form.nota1.label }}</label>
+                            {{ form.nota1 }}
+                            {% if form.nota1.errors %}
+                            <div class="text-danger small mt-1">{{ form.nota1.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.nota2.id_for_label }}" class="form-label">{{ form.nota2.label }}</label>
+                            {{ form.nota2 }}
+                            {% if form.nota2.errors %}
+                            <div class="text-danger small mt-1">{{ form.nota2.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.nota3.id_for_label }}" class="form-label">{{ form.nota3.label }}</label>
+                            {{ form.nota3 }}
+                            {% if form.nota3.errors %}
+                            <div class="text-danger small mt-1">{{ form.nota3.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-pastel-warning">
+                            <i class="bi bi-check-lg me-1"></i><span>Actualizar</span>
+                        </button>
+                        <a href="{% url 'listar' %}" class="btn btn-pastel-outline">
+                            <i class="bi bi-x-lg me-1"></i>Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-warning">Actualizar</button>
-    <a href="{% url 'listar' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+</div>
 {% endblock %}
