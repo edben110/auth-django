@@ -1,0 +1,94 @@
+{% extends 'calificaciones/base.html' %}
+
+{% block title %}Listado de Calificaciones{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2><i class="bi bi-journal-text me-2"></i>Listado de Calificaciones</h2>
+    <a href="{% url 'crear' %}" class="btn btn-pastel-primary">
+        <i class="bi bi-plus-lg me-1"></i><span>Nueva Calificación</span>
+    </a>
+</div>
+
+<div class="card" style="overflow: hidden;">
+    <div style="height: 5px; background: linear-gradient(90deg, #ab47bc, #5c6bc0, #26a69a, #ffa726);"></div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Identificación</th>
+                        <th>Asignatura</th>
+                        <th class="text-center">Nota 1</th>
+                        <th class="text-center">Nota 2</th>
+                        <th class="text-center">Nota 3</th>
+                        <th class="text-center">Promedio</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in calificaciones %}
+                    <tr>
+                        <td>
+                            <i class="bi bi-person me-1" style="color: #9575cd;"></i>
+                            <span style="color: #37304a; font-weight: 500;">{{ c.nombre_estudiante }}</span>
+                        </td>
+                        <td><span style="color: #736b8a;">{{ c.identificacion }}</span></td>
+                        <td style="color: #4a3f63;">{{ c.asignatura }}</td>
+                        <td class="text-center" style="color: #4a3f63;">{{ c.nota1 }}</td>
+                        <td class="text-center" style="color: #4a3f63;">{{ c.nota2 }}</td>
+                        <td class="text-center" style="color: #4a3f63;">{{ c.nota3 }}</td>
+                        <td class="text-center">
+                            {% if c.promedio >= 3.00 %}
+                            <span class="badge badge-promedio badge-aprobado">{{ c.promedio }}</span>
+                            {% else %}
+                            <span class="badge badge-promedio badge-reprobado">{{ c.promedio }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'editar' c.pk %}" class="btn btn-sm btn-action-edit me-1" title="Editar">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a href="{% url 'eliminar' c.pk %}" class="btn btn-sm btn-action-delete" title="Eliminar">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-5">
+                            <i class="bi bi-inbox" style="font-size: 2.5rem; color: #c5b8e0;"></i>
+                            <p class="mt-2 mb-0" style="color: #736b8a;">No hay calificaciones registradas.</p>
+                            <a href="{% url 'crear' %}" class="btn btn-pastel-primary btn-sm mt-3">
+                                <i class="bi bi-plus-lg me-1"></i><span>Registrar la primera</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if promedio_general is not None %}
+<div class="card mt-4" style="border-left: 5px solid #9575cd; overflow: hidden;">
+    <div class="card-body d-flex align-items-center justify-content-between py-4 px-4">
+        <div>
+            <h5 class="mb-1" style="font-weight: 600; color: #37304a;">
+                <i class="bi bi-bar-chart-line me-2" style="color: #9575cd;"></i>Promedio General
+            </h5>
+            <p class="mb-0" style="color: #736b8a;">Calculado sobre todos los estudiantes registrados</p>
+        </div>
+        <div>
+            {% if promedio_general >= 3.00 %}
+            <span class="display-6 fw-bold" style="color: #43a047;">{{ promedio_general|floatformat:2 }}</span>
+            {% else %}
+            <span class="display-6 fw-bold" style="color: #e53935;">{{ promedio_general|floatformat:2 }}</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

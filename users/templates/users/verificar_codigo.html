@@ -1,0 +1,191 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Verificar Código{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #e1bee7 0%, #c5cae9 35%, #b2dfdb 65%, #ffe0b2 100%);
+        background-attachment: fixed;
+        position: relative;
+    }
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image:
+            radial-gradient(circle at 15% 25%, rgba(171, 71, 188, 0.18) 0%, transparent 50%),
+            radial-gradient(circle at 85% 75%, rgba(79, 195, 247, 0.18) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(255, 167, 38, 0.1) 0%, transparent 55%);
+        pointer-events: none;
+        z-index: 0;
+    }
+    .verify-container {
+        max-width: 720px;
+        width: 90%;
+        margin: 50px auto;
+        position: relative;
+        z-index: 1;
+    }
+    .verify-card {
+        border: none;
+        border-radius: 24px;
+        background: linear-gradient(160deg, #fff9fe 0%, #f3ecff 40%, #ecf6ff 100%);
+        box-shadow: 0 10px 40px rgba(126, 87, 194, 0.16), 0 2px 10px rgba(0,0,0,0.07);
+        overflow: hidden;
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .verify-card:hover {
+        box-shadow: 0 16px 56px rgba(126, 87, 194, 0.25), 0 4px 14px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+    }
+    .card-top-bar {
+        height: 7px;
+        background: linear-gradient(90deg, #42a5f5, #5c6bc0, #ab47bc, #26a69a);
+    }
+    .verify-icon {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2.2rem;
+        color: #fff;
+        background: linear-gradient(135deg, #42a5f5, #5c6bc0);
+        box-shadow: 0 6px 20px rgba(66, 165, 245, 0.45);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .verify-icon:hover {
+        transform: scale(1.12) rotate(5deg);
+        box-shadow: 0 8px 28px rgba(92, 107, 192, 0.55);
+    }
+    .verify-title { font-weight: 700; color: #37304a; font-size: 1.7rem; }
+    .verify-subtitle { color: #736b8a; font-size: 0.95rem; }
+    .verify-card .form-control {
+        border: 2px solid #d1c4e9;
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 1rem;
+        background-color: #faf7ff;
+        transition: all 0.3s ease;
+    }
+    .verify-card .form-control:hover {
+        border-color: #b39ddb;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(149, 117, 205, 0.1);
+    }
+    .verify-card .form-control:focus {
+        border-color: #9575cd;
+        background-color: #fff;
+        box-shadow: 0 0 0 4px rgba(149, 117, 205, 0.2);
+    }
+    .btn-verify {
+        background: linear-gradient(135deg, #42a5f5 0%, #5c6bc0 100%);
+        border: none;
+        border-radius: 14px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.08rem;
+        padding: 15px 28px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-verify::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%; right: 0; bottom: 0;
+        background: linear-gradient(135deg, #1e88e5 0%, #3f51b5 100%);
+        transition: left 0.4s ease;
+        z-index: 0;
+    }
+    .btn-verify:hover::before { left: 0; }
+    .btn-verify:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(66, 165, 245, 0.45);
+        color: #fff;
+    }
+    .btn-verify:active { transform: translateY(0); }
+    .btn-verify span, .btn-verify i { position: relative; z-index: 1; }
+    .pastel-divider {
+        display: flex;
+        align-items: center;
+        margin: 24px 0;
+    }
+    .pastel-divider::before, .pastel-divider::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #c5b8e0, transparent);
+    }
+    .pastel-divider span { padding: 0 16px; color: #9a8bb8; font-size: 0.85rem; font-weight: 500; }
+    .resend-link {
+        color: #5c6bc0;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    .resend-link:hover {
+        color: #3949ab;
+        background-color: rgba(92, 107, 192, 0.12);
+    }
+    footer { color: #9a8bb8; }
+    .alert { border-radius: 14px; border: none; backdrop-filter: blur(4px); }
+    .alert-success { background: linear-gradient(135deg, #c8e6c9, #dcedc8); color: #1b5e20; }
+    .alert-danger, .alert-error { background: linear-gradient(135deg, #f8bbd0, #ffe0b2); color: #b71c1c; }
+    .alert-warning { background: linear-gradient(135deg, #fff9c4, #ffe0b2); color: #e65100; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verify-container">
+    <div class="verify-card">
+        <div class="card-top-bar"></div>
+        <div class="px-5 py-5">
+            <div class="verify-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <h3 class="text-center verify-title mb-2">Verificar Código</h3>
+            <p class="text-center verify-subtitle mb-4">
+                Ingresa el código de 6 dígitos que enviamos a
+                <strong style="color: #5c6bc0;">{{ email }}</strong>
+            </p>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            {{ form.codigo }}
+                            {% if form.codigo.errors %}
+                            <div class="text-danger small mt-1 text-center">
+                                {% for error in form.codigo.errors %}
+                                <p class="mb-0"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-verify w-100">
+                            <i class="bi bi-check-circle me-1"></i><span>Verificar Código</span>
+                        </button>
+                    </form>
+
+                    <div class="pastel-divider">
+                        <span>¿No recibiste el código?</span>
+                    </div>
+
+                    <p class="text-center mb-0">
+                        <a href="{% url 'recuperar_password' %}" class="resend-link">
+                            <i class="bi bi-arrow-repeat me-1"></i>Reenviar código
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

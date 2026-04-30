@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Calificaciones{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        /* ── Fondo pastel con textura ── */
+        body {
+            background: linear-gradient(135deg, #e1bee7 0%, #c5cae9 35%, #b2dfdb 65%, #ffe0b2 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 25%, rgba(171, 71, 188, 0.18) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(79, 195, 247, 0.18) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 167, 38, 0.1) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Navbar con degradado ── */
+        .navbar-pastel {
+            background: linear-gradient(135deg, #4a3f63 0%, #3a3555 50%, #2d2845 100%);
+            box-shadow: 0 4px 20px rgba(74, 63, 99, 0.35);
+            position: relative;
+            z-index: 10;
+        }
+        .navbar-pastel .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #e8e0f0;
+            transition: color 0.3s ease;
+        }
+        .navbar-pastel .navbar-brand:hover {
+            color: #fff;
+        }
+        .navbar-pastel .nav-link {
+            color: #c5b8e0;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin: 0 2px;
+        }
+        .navbar-pastel .nav-link:hover {
+            color: #fff;
+            background-color: rgba(179, 157, 219, 0.2);
+        }
+        .navbar-pastel .btn-outline-light {
+            border-color: #c5b8e0;
+            color: #c5b8e0;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .navbar-pastel .btn-outline-light:hover {
+            background: linear-gradient(135deg, #9575cd, #7e57c2);
+            border-color: #9575cd;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(149, 117, 205, 0.4);
+        }
+        .navbar-pastel .user-badge {
+            color: #d1c4e9;
+            font-weight: 500;
+        }
+
+        /* ── Contenido ── */
+        .content-wrapper {
+            margin-top: 30px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Headers de página ── */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid rgba(149, 117, 205, 0.2);
+        }
+        .page-header h2 {
+            margin: 0;
+            font-weight: 700;
+            color: #37304a;
+        }
+
+        /* ── Cards ── */
+        .card {
+            border: none;
+            border-radius: 18px;
+            background: linear-gradient(160deg, #fff9fe 0%, #f3ecff 40%, #ecf6ff 100%);
+            box-shadow: 0 6px 24px rgba(126, 87, 194, 0.12), 0 2px 8px rgba(0,0,0,0.06);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 10px 36px rgba(126, 87, 194, 0.2), 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        /* ── Tabla ── */
+        .table {
+            margin-bottom: 0;
+        }
+        .table thead th {
+            font-weight: 600;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom-width: 2px;
+            background: linear-gradient(135deg, #4a3f63, #3a3555);
+            color: #e8e0f0;
+        }
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+        .table tbody tr:hover {
+            background-color: rgba(179, 157, 219, 0.08);
+        }
+
+        /* ── Badges de promedio ── */
+        .badge-promedio {
+            font-size: 0.95rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+        .badge-aprobado {
+            background: linear-gradient(135deg, #66bb6a, #26a69a);
+        }
+        .badge-reprobado {
+            background: linear-gradient(135deg, #ef5350, #e53935);
+        }
+
+        /* ── Botones generales ── */
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 8px 18px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 0.82rem;
+        }
+
+        /* ── Botones con degradado ── */
+        .btn-pastel-primary {
+            background: linear-gradient(135deg, #9575cd 0%, #64b5f6 100%);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-pastel-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #7e57c2 0%, #42a5f5 100%);
+            transition: left 0.4s ease;
+            z-index: 0;
+        }
+        .btn-pastel-primary:hover::before { left: 0; }
+        .btn-pastel-primary:hover {
+            box-shadow: 0 6px 20px rgba(149, 117, 205, 0.4);
+            color: #fff;
+        }
+        .btn-pastel-primary span, .btn-pastel-primary i { position: relative; z-index: 1; }
+
+        .btn-pastel-success {
+            background: linear-gradient(135deg, #66bb6a 0%, #26a69a 100%);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-pastel-success::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #43a047 0%, #00897b 100%);
+            transition: left 0.4s ease;
+            z-index: 0;
+        }
+        .btn-pastel-success:hover::before { left: 0; }
+        .btn-pastel-success:hover {
+            box-shadow: 0 6px 20px rgba(102, 187, 106, 0.4);
+            color: #fff;
+        }
+        .btn-pastel-success span, .btn-pastel-success i { position: relative; z-index: 1; }
+
+        .btn-pastel-warning {
+            background: linear-gradient(135deg, #ffa726 0%, #ffcc80 100%);
+            border: none;
+            color: #4a3f63;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-pastel-warning::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #fb8c00 0%, #ffb74d 100%);
+            transition: left 0.4s ease;
+            z-index: 0;
+        }
+        .btn-pastel-warning:hover::before { left: 0; }
+        .btn-pastel-warning:hover {
+            box-shadow: 0 6px 20px rgba(255, 167, 38, 0.4);
+            color: #4a3f63;
+        }
+        .btn-pastel-warning span, .btn-pastel-warning i { position: relative; z-index: 1; }
+
+        .btn-pastel-danger {
+            background: linear-gradient(135deg, #ef5350 0%, #e53935 100%);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-pastel-danger::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+            transition: left 0.4s ease;
+            z-index: 0;
+        }
+        .btn-pastel-danger:hover::before { left: 0; }
+        .btn-pastel-danger:hover {
+            box-shadow: 0 6px 20px rgba(239, 83, 80, 0.4);
+            color: #fff;
+        }
+        .btn-pastel-danger span, .btn-pastel-danger i { position: relative; z-index: 1; }
+
+        .btn-pastel-outline {
+            background: transparent;
+            border: 2px solid #d1c4e9;
+            color: #5c5470;
+            font-weight: 500;
+        }
+        .btn-pastel-outline:hover {
+            border-color: #9575cd;
+            color: #7e57c2;
+            background-color: rgba(149, 117, 205, 0.08);
+        }
+
+        /* ── Botones de acción en tabla ── */
+        .btn-action-edit {
+            border: 2px solid #ffa726;
+            color: #f57c00;
+            background: transparent;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .btn-action-edit:hover {
+            background: linear-gradient(135deg, #ffa726, #ffcc80);
+            color: #fff;
+            border-color: #ffa726;
+            box-shadow: 0 4px 12px rgba(255, 167, 38, 0.35);
+        }
+        .btn-action-delete {
+            border: 2px solid #ef5350;
+            color: #e53935;
+            background: transparent;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .btn-action-delete:hover {
+            background: linear-gradient(135deg, #ef5350, #e53935);
+            color: #fff;
+            border-color: #ef5350;
+            box-shadow: 0 4px 12px rgba(239, 83, 80, 0.35);
+        }
+
+        /* ── Formularios ── */
+        .form-label {
+            font-weight: 600;
+            color: #4a3f63;
+            margin-bottom: 4px;
+            font-size: 0.92rem;
+        }
+        .form-control {
+            border: 2px solid #d1c4e9;
+            border-radius: 12px;
+            padding: 12px 16px;
+            background-color: #faf7ff;
+            transition: all 0.3s ease;
+        }
+        .form-control:hover {
+            border-color: #b39ddb;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(149, 117, 205, 0.1);
+        }
+        .form-control:focus {
+            border-color: #9575cd;
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(149, 117, 205, 0.2);
+        }
+        .form-control::placeholder {
+            color: #b0a3c7;
+        }
+
+        /* ── Separador en formularios ── */
+        hr {
+            border-color: rgba(149, 117, 205, 0.2);
+        }
+
+        /* ── Alertas ── */
+        .alert {
+            border-radius: 14px;
+            border: none;
+            backdrop-filter: blur(4px);
+        }
+        .alert-success {
+            background: linear-gradient(135deg, #c8e6c9, #dcedc8);
+            color: #1b5e20;
+        }
+        .alert-danger, .alert-error {
+            background: linear-gradient(135deg, #f8bbd0, #ffe0b2);
+            color: #b71c1c;
+        }
+        .alert-info {
+            background: linear-gradient(135deg, #bbdefb, #d1c4e9);
+            color: #0d47a1;
+        }
+        .alert-warning {
+            background: linear-gradient(135deg, #fff9c4, #ffe0b2);
+            color: #e65100;
+        }
+        .alert-light {
+            background: linear-gradient(135deg, #f3ecff, #ecf6ff);
+            color: #4a3f63;
+            border: 1px solid rgba(149, 117, 205, 0.15);
+        }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #9a8bb8;
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-pastel">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="bi bi-mortarboard-fill me-2"></i>Sistema de Evaluaciones
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    style="border-color: #c5b8e0;">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'listar' %}">
+                            <i class="bi bi-list-ul me-1"></i>Listado
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'crear' %}">
+                            <i class="bi bi-plus-circle me-1"></i>Registrar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'promedio_general' %}">
+                            <i class="bi bi-bar-chart-line me-1"></i>Promedio General
+                        </a>
+                    </li>
+                </ul>
+                {% if user.is_authenticated %}
+                <div class="d-flex align-items-center">
+                    <span class="user-badge me-3">
+                        <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+                    </span>
+                    <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="container mt-3" style="position: relative; z-index: 1;">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <i class="bi bi-info-circle me-1"></i>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="container content-wrapper">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <div class="container">
+            Sistema de Evaluaciones &copy; 2025
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
