@@ -1,0 +1,22 @@
+{% extends 'calificaciones/base.html' %}
+
+{% block title %}Promedio General{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Promedio General</h2>
+
+{% if promedio_general is not None %}
+<div class="card">
+    <div class="card-body text-center">
+        <h3 class="card-title">Promedio General de Todos los Estudiantes</h3>
+        <p class="display-4 text-primary">{{ promedio_general|floatformat:2 }}</p>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-warning">
+    No hay calificaciones registradas para calcular el promedio.
+</div>
+{% endif %}
+
+<a href="{% url 'listar' %}" class="btn btn-secondary mt-3">Volver al Listado</a>
+{% endblock %}
