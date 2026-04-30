@@ -141,3 +141,19 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
+
+# ──────────────────────────────────────────────────────────
+# Configuración de correo electrónico (Gmail SMTP)
+# ──────────────────────────────────────────────────────────
+# Para que funcione necesitas:
+# 1. Ir a https://myaccount.google.com/security
+# 2. Activar la verificación en 2 pasos
+# 3. Ir a "Contraseñas de aplicaciones" y generar una
+# 4. Pegar esa contraseña de 16 caracteres en EMAIL_HOST_PASSWORD
+# ──────────────────────────────────────────────────────────
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'gmailcorreoprueba@gmail.com'
+EMAIL_HOST_PASSWORD = 'wsog aotu nyfl spef'

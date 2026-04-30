@@ -1,31 +1,90 @@
-{% extends 'users/base.html' %}
+{% extends 'calificaciones/base.html' %}
 
 {% block title %}Inicio{% endblock %}
 
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}">Sistema de Evaluaciones</a>
-        <div class="d-flex align-items-center">
-            {% if user.is_authenticated %}
-            <span class="text-light me-3">Hola, {{ user.username }}</span>
-            <a href="{% url 'listar' %}" class="btn btn-outline-info btn-sm me-2">Calificaciones</a>
-            <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Cerrar sesión</a>
-            {% else %}
-            <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2">Ingresar</a>
-            <a href="{% url 'register' %}" class="btn btn-light btn-sm">Registrarse</a>
-            {% endif %}
+<div class="text-center py-5">
+    <div class="mb-4">
+        <div style="width: 100px; height: 100px; border-radius: 50%; margin: 0 auto;
+                    background: linear-gradient(135deg, #9575cd, #64b5f6);
+                    box-shadow: 0 8px 28px rgba(149, 117, 205, 0.4);
+                    display: flex; align-items: center; justify-content: center;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;"
+             onmouseover="this.style.transform='scale(1.1) rotate(5deg)'; this.style.boxShadow='0 12px 36px rgba(149,117,205,0.55)'"
+             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 28px rgba(149,117,205,0.4)'">
+            <i class="bi bi-mortarboard" style="font-size: 2.8rem; color: #fff;"></i>
         </div>
     </div>
-</nav>
+    <h1 style="font-weight: 700; color: #37304a; font-size: 2.2rem;">Bienvenido, {{ user.username }}</h1>
+    <p class="lead mb-5" style="color: #736b8a;">Sistema de gestión de calificaciones de estudiantes</p>
 
-<div class="container mt-5">
-    <div class="text-center">
-        <h1>Bienvenido al Sistema de Evaluaciones</h1>
-        <p class="lead text-muted">Gestión de calificaciones de estudiantes</p>
-        {% if user.is_authenticated %}
-        <a href="{% url 'listar' %}" class="btn btn-primary btn-lg mt-3">Ir a Calificaciones</a>
-        {% endif %}
+    <div class="row justify-content-center g-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100" style="cursor: pointer;"
+                 onclick="window.location='{% url 'listar' %}'">
+                <div style="height: 5px; background: linear-gradient(90deg, #9575cd, #64b5f6); border-radius: 18px 18px 0 0;"></div>
+                <div class="card-body text-center p-4">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 16px;
+                                background: linear-gradient(135deg, #9575cd, #64b5f6);
+                                display: flex; align-items: center; justify-content: center;
+                                box-shadow: 0 4px 16px rgba(149, 117, 205, 0.35);
+                                transition: transform 0.3s ease;"
+                         onmouseover="this.style.transform='scale(1.1)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                        <i class="bi bi-list-ul" style="font-size: 1.8rem; color: #fff;"></i>
+                    </div>
+                    <h5 style="font-weight: 600; color: #37304a;">Ver Calificaciones</h5>
+                    <p style="color: #736b8a; font-size: 0.9rem;">Consulta el listado completo de calificaciones registradas</p>
+                    <a href="{% url 'listar' %}" class="btn btn-pastel-primary">
+                        <i class="bi bi-arrow-right me-1"></i><span>Ir al Listado</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100" style="cursor: pointer;"
+                 onclick="window.location='{% url 'crear' %}'">
+                <div style="height: 5px; background: linear-gradient(90deg, #66bb6a, #26a69a); border-radius: 18px 18px 0 0;"></div>
+                <div class="card-body text-center p-4">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 16px;
+                                background: linear-gradient(135deg, #66bb6a, #26a69a);
+                                display: flex; align-items: center; justify-content: center;
+                                box-shadow: 0 4px 16px rgba(102, 187, 106, 0.35);
+                                transition: transform 0.3s ease;"
+                         onmouseover="this.style.transform='scale(1.1)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                        <i class="bi bi-plus-circle" style="font-size: 1.8rem; color: #fff;"></i>
+                    </div>
+                    <h5 style="font-weight: 600; color: #37304a;">Registrar Nueva</h5>
+                    <p style="color: #736b8a; font-size: 0.9rem;">Agrega una nueva calificación al sistema</p>
+                    <a href="{% url 'crear' %}" class="btn btn-pastel-success">
+                        <i class="bi bi-plus-lg me-1"></i><span>Registrar</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100" style="cursor: pointer;"
+                 onclick="window.location='{% url 'promedio_general' %}'">
+                <div style="height: 5px; background: linear-gradient(90deg, #42a5f5, #5c6bc0); border-radius: 18px 18px 0 0;"></div>
+                <div class="card-body text-center p-4">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 16px;
+                                background: linear-gradient(135deg, #42a5f5, #5c6bc0);
+                                display: flex; align-items: center; justify-content: center;
+                                box-shadow: 0 4px 16px rgba(66, 165, 245, 0.35);
+                                transition: transform 0.3s ease;"
+                         onmouseover="this.style.transform='scale(1.1)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                        <i class="bi bi-bar-chart-line" style="font-size: 1.8rem; color: #fff;"></i>
+                    </div>
+                    <h5 style="font-weight: 600; color: #37304a;">Promedio General</h5>
+                    <p style="color: #736b8a; font-size: 0.9rem;">Visualiza el promedio general de todos los estudiantes</p>
+                    <a href="{% url 'promedio_general' %}" class="btn btn-pastel-primary">
+                        <i class="bi bi-graph-up me-1"></i><span>Ver Promedio</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

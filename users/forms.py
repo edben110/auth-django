@@ -23,3 +23,69 @@ class UserRegisterForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Contraseña'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Confirmar contraseña'})
+
+
+# ──────────────────────────────────────────────────────────
+# Formularios para recuperación de contraseña
+# ──────────────────────────────────────────────────────────
+
+class RecuperarPasswordForm(forms.Form):
+    """
+    Paso 1: El usuario ingresa su correo electrónico.
+    Se verifica que exista en la base de datos antes de enviar el código.
+    """
+    email = forms.EmailField(
+        label='Correo electrónico',
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control form-control-lg',
+            'placeholder': 'Ingresa tu correo registrado',
+        }),
+    )
+
+
+class VerificarCodigoForm(forms.Form):
+    """
+    Paso 2: El usuario ingresa el código de 6 dígitos
+    que recibió en su correo electrónico.
+    """
+    codigo = forms.CharField(
+        label='Código de verificación',
+        max_length=6,
+        min_length=6,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control form-control-lg text-center',
+            'placeholder': '000000',
+            'maxlength': '6',
+            'style': 'letter-spacing: 8px; font-size: 1.5rem; font-weight: bold;',
+        }),
+    )
+
+
+class NuevaPasswordForm(forms.Form):
+    """
+    Paso 3: El usuario define su nueva contraseña.
+    Se valida que ambas contraseñas coincidan.
+    """
+    password1 = forms.CharField(
+        label='Nueva contraseña',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control form-control-lg',
+            'placeholder': 'Ingresa tu nueva contraseña',
+        }),
+    )
+    password2 = forms.CharField(
+        label='Confirmar contraseña',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control form-control-lg',
+            'placeholder': 'Repite tu nueva contraseña',
+        }),
+    )
+
+    def clean(self):
+        """Valida que ambas contraseñas sean iguales."""
+        cleaned_data = super().clean()
+        p1 = cleaned_data.get('password1')
+        p2 = cleaned_data.get('password2')
+        if p1 and p2 and p1 != p2:
+            raise forms.ValidationError('Las contraseñas no coinciden.')
+        return cleaned_data

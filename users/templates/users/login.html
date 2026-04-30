@@ -2,25 +2,285 @@
 
 {% block title %}Iniciar Sesión{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* ── Fondo pastel oscuro con textura ── */
+    body {
+        background: linear-gradient(135deg, #e1bee7 0%, #c5cae9 35%, #b2dfdb 65%, #ffe0b2 100%);
+        background-attachment: fixed;
+        position: relative;
+    }
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image:
+            radial-gradient(circle at 15% 25%, rgba(171, 71, 188, 0.18) 0%, transparent 50%),
+            radial-gradient(circle at 85% 75%, rgba(79, 195, 247, 0.18) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(255, 167, 38, 0.1) 0%, transparent 55%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* ── Contenedor ancho ── */
+    .login-container {
+        max-width: 720px;
+        width: 90%;
+        margin: 50px auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ── Card principal ── */
+    .login-card {
+        border: none;
+        border-radius: 24px;
+        background: linear-gradient(160deg, #fff9fe 0%, #f3ecff 40%, #ecf6ff 100%);
+        box-shadow:
+            0 10px 40px rgba(126, 87, 194, 0.16),
+            0 2px 10px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .login-card:hover {
+        box-shadow:
+            0 16px 56px rgba(126, 87, 194, 0.25),
+            0 4px 14px rgba(0, 0, 0, 0.1);
+        transform: translateY(-3px);
+    }
+
+    /* ── Barra decorativa superior más gruesa ── */
+    .card-top-bar {
+        height: 7px;
+        background: linear-gradient(90deg, #ab47bc, #5c6bc0, #26a69a, #ffa726);
+    }
+
+    /* ── Icono circular con degradado más intenso ── */
+    .login-icon {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2.2rem;
+        color: #fff;
+        background: linear-gradient(135deg, #9575cd, #64b5f6);
+        box-shadow: 0 6px 20px rgba(100, 181, 246, 0.45);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .login-icon:hover {
+        transform: scale(1.12) rotate(5deg);
+        box-shadow: 0 8px 28px rgba(149, 117, 205, 0.55);
+    }
+
+    /* ── Títulos ── */
+    .login-title {
+        font-weight: 700;
+        color: #37304a;
+        font-size: 1.7rem;
+    }
+    .login-subtitle {
+        color: #736b8a;
+        font-size: 0.95rem;
+    }
+
+    /* ── Labels ── */
+    .login-card .form-label {
+        font-weight: 600;
+        color: #4a3f63;
+        font-size: 0.92rem;
+        transition: color 0.2s ease;
+    }
+
+    /* ── Inputs ── */
+    .login-card .form-control {
+        border: 2px solid #d1c4e9;
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 1rem;
+        background-color: #faf7ff;
+        transition: all 0.3s ease;
+    }
+    .login-card .form-control:hover {
+        border-color: #b39ddb;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(149, 117, 205, 0.1);
+    }
+    .login-card .form-control:focus {
+        border-color: #9575cd;
+        background-color: #fff;
+        box-shadow: 0 0 0 4px rgba(149, 117, 205, 0.2);
+    }
+    .login-card .form-control::placeholder {
+        color: #b0a3c7;
+    }
+
+    /* ── Botón principal ── */
+    .btn-login {
+        background: linear-gradient(135deg, #9575cd 0%, #64b5f6 100%);
+        border: none;
+        border-radius: 14px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.08rem;
+        padding: 15px 28px;
+        letter-spacing: 0.3px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-login::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%; right: 0; bottom: 0;
+        background: linear-gradient(135deg, #ab47bc 0%, #42a5f5 100%);
+        transition: left 0.4s ease;
+        z-index: 0;
+    }
+    .btn-login:hover::before {
+        left: 0;
+    }
+    .btn-login:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(149, 117, 205, 0.45);
+        color: #fff;
+    }
+    .btn-login:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(149, 117, 205, 0.3);
+    }
+    .btn-login span, .btn-login i {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ── Enlace olvidaste contraseña ── */
+    .forgot-link {
+        color: #8e6fbf;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        padding: 6px 14px;
+        border-radius: 8px;
+    }
+    .forgot-link:hover {
+        color: #6a1b9a;
+        background-color: rgba(149, 117, 205, 0.15);
+    }
+
+    /* ── Divider ── */
+    .pastel-divider {
+        display: flex;
+        align-items: center;
+        margin: 24px 0;
+    }
+    .pastel-divider::before, .pastel-divider::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #c5b8e0, transparent);
+    }
+    .pastel-divider span {
+        padding: 0 16px;
+        color: #9a8bb8;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* ── Enlace de registro ── */
+    .register-link {
+        color: #7e57c2;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    .register-link:hover {
+        color: #5e35b1;
+        background-color: rgba(126, 87, 194, 0.12);
+        text-decoration: none;
+    }
+
+    /* ── Footer ── */
+    footer {
+        color: #9a8bb8;
+    }
+
+    /* ── Alertas ── */
+    .alert {
+        border-radius: 14px;
+        border: none;
+        backdrop-filter: blur(4px);
+    }
+    .alert-success {
+        background: linear-gradient(135deg, #c8e6c9, #dcedc8);
+        color: #1b5e20;
+    }
+    .alert-danger, .alert-error {
+        background: linear-gradient(135deg, #f8bbd0, #ffe0b2);
+        color: #b71c1c;
+    }
+    .alert-info {
+        background: linear-gradient(135deg, #bbdefb, #d1c4e9);
+        color: #0d47a1;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="auth-container">
-    <div class="card p-4">
-        <h3 class="text-center mb-4">Iniciar Sesión</h3>
-        <form method="POST">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="username" class="form-label">Usuario o Correo Electrónico</label>
-                <input type="text" name="username" id="username" class="form-control" placeholder="Usuario o correo electrónico" required>
+<div class="login-container">
+    <div class="login-card">
+        <div class="card-top-bar"></div>
+        <div class="px-5 py-5">
+            <div class="login-icon">
+                <i class="bi bi-box-arrow-in-right"></i>
             </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
+            <h3 class="text-center login-title mb-2">Iniciar Sesión</h3>
+            <p class="text-center login-subtitle mb-4">Ingresa tus credenciales para continuar</p>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">
+                                <i class="bi bi-person me-1"></i>Usuario o Correo Electrónico
+                            </label>
+                            <input type="text" name="username" id="username" class="form-control"
+                                   placeholder="Ingresa tu usuario o correo" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label">
+                                <i class="bi bi-lock me-1"></i>Contraseña
+                            </label>
+                            <input type="password" name="password" id="password" class="form-control"
+                                   placeholder="Ingresa tu contraseña" required>
+                        </div>
+                        <button type="submit" class="btn btn-login w-100">
+                            <i class="bi bi-box-arrow-in-right me-1"></i><span>Ingresar</span>
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a href="{% url 'recuperar_password' %}" class="forgot-link">
+                            <i class="bi bi-question-circle me-1"></i>¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+
+                    <div class="pastel-divider">
+                        <span>o</span>
+                    </div>
+
+                    <p class="text-center mb-0" style="color: #736b8a;">
+                        ¿No tienes cuenta?
+                        <a href="{% url 'register' %}" class="register-link">Regístrate aquí</a>
+                    </p>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Ingresar</button>
-        </form>
-        <p class="text-center mt-3 mb-0">
-            ¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate aquí</a>
-        </p>
+        </div>
     </div>
 </div>
 {% endblock %}
